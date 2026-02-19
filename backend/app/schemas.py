@@ -24,6 +24,7 @@ class User(UserBase):
 
 # Note
 class NoteBase(BaseModel):
+    title: str = "Untitled Note"
     content: str
     type: str = "note"
 
@@ -46,6 +47,7 @@ class SourceFileBase(BaseModel):
 class SourceFile(SourceFileBase):
     id: int
     notebook_id: int
+    file_path: str
     uploaded_at: datetime
     class Config:
         from_attributes = True
@@ -57,9 +59,13 @@ class NotebookBase(BaseModel):
 class NotebookCreate(NotebookBase):
     pass
 
+class NotebookUpdate(NotebookBase):
+    pass
+
 class Notebook(NotebookBase):
     id: int
     owner_id: int
+    thumbnail_url: Optional[str] = None
     created_at: datetime
     sources: List[SourceFile] = []
     notes: List[Note] = []

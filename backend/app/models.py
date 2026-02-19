@@ -17,6 +17,7 @@ class Notebook(Base):
 
     id = Column(Integer, primary_key=True, index=True)
     title = Column(String, index=True)
+    thumbnail_url = Column(String, nullable=True)
     created_at = Column(DateTime, default=datetime.utcnow)
     owner_id = Column(Integer, ForeignKey("users.id"))
     
@@ -41,6 +42,7 @@ class Note(Base):
 
     id = Column(Integer, primary_key=True, index=True)
     notebook_id = Column(Integer, ForeignKey("notebooks.id"))
+    title = Column(String, default="Untitled Note")
     content = Column(Text, default="")
     type = Column(String, default="note") # 'overview', 'note', 'summary'
     created_at = Column(DateTime, default=datetime.utcnow)

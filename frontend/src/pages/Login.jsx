@@ -51,9 +51,9 @@ export default function Login() {
                         {isRegister ? 'Sign Up' : 'Log In'}
                     </button>
                 </form>
-                <p style={{ marginTop: 16, textAlign: 'center', cursor: 'pointer', color: 'var(--primary)' }} onClick={() => setIsRegister(!isRegister)}>
+                {/* <p style={{ marginTop: 16, textAlign: 'center', cursor: 'pointer', color: 'var(--primary)' }} onClick={() => setIsRegister(!isRegister)}>
                     {isRegister ? 'Already have an account? Login' : 'Need an account? Register'}
-                </p>
+                </p> */}
             </div>
         </div>
     );
