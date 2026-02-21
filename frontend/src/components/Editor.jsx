@@ -3,10 +3,11 @@ import Quill from 'quill';
 import 'quill/dist/quill.snow.css';
 import BlotFormatter from 'quill-blot-formatter';
 import api from '../api';
+import { ArrowLeft, Settings, X } from 'lucide-react';
 
 Quill.register('modules/blotFormatter', BlotFormatter);
 
-export default function Editor({ notebookId, type = 'overview', initialNote = null, onSave, readOnly = false }) {
+export default function Editor({ notebookId, type = 'overview', initialNote = null, onSave, onClose, readOnly = false }) {
     // If type is overview, we fetch it. If type is note, we use initialNote or blank.
     const [noteId, setNoteId] = useState(null);
     const [title, setTitle] = useState('');
@@ -121,41 +122,67 @@ export default function Editor({ notebookId, type = 'overview', initialNote = nu
 
     return (
         <div style={{ height: '100%', display: 'flex', flexDirection: 'column' }}>
-            <div style={{ marginBottom: 16, display: 'flex', gap: 16, alignItems: 'center' }}>
-                {type === 'note' && (
+            <div style={{ paddingBottom: type === 'overview' ? 16 : 16, borderBottom: '1px solid var(--border)', display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: type === 'overview' ? 16 : 16 }}>
+                {type === 'note' ? (
                     <input
                         className="input"
-                        style={{ flex: 1, fontWeight: 600 }}
+                        style={{ flex: 1, fontWeight: 600, boxSizing: 'border-box', marginRight: 16 }}
                         placeholder="Note Title"
                         value={title}
                         onChange={e => setTitle(e.target.value)}
                         disabled={!isEditing || readOnly}
                     />
+                ) : (
+                    <h4 style={{ margin: 0, fontSize: 16, fontWeight: 600 }}>Overview</h4>
                 )}
-                {!readOnly && (
-                    <div style={{ flex: type === 'overview' ? 1 : 0, display: 'flex', justifyContent: 'flex-end', gap: 8 }}>
-                        <button
-                            className="btn"
-                            onClick={() => setIsEditing(!isEditing)}
-                            style={{
-                                background: isEditing ? '#f1f3f4' : 'transparent',
-                                border: '1px solid var(--border)'
-                            }}
-                        >
-                            {isEditing ? 'Done Editing' : 'Edit'}
-                        </button>
 
-                        {isEditing && (
-                            <button className="btn btn-primary" onClick={handleSave} disabled={saving}>
-                                {saving ? 'Saving...' : 'Save'}
+                <div style={{ display: 'flex', gap: 8, alignItems: 'center' }}>
+                    {!readOnly && (
+                        <div style={{ display: 'flex', gap: 8 }}>
+                            {isEditing && (
+                                <button className="btn btn-primary" style={{ padding: '6px 12px', fontSize: 13, borderRadius: 24, background: '#1a73e8', color: '#fff', border: 'none' }} onClick={handleSave} disabled={saving}>
+                                    {saving ? 'Saving...' : 'Save'}
+                                </button>
+                            )}
+                            <button
+                                className="btn"
+                                onClick={() => setIsEditing(!isEditing)}
+                                style={{
+                                    padding: '6px 12px',
+                                    fontSize: 13,
+                                    borderRadius: 24,
+                                    background: isEditing ? '#f1f3f4' : '#fff',
+                                    border: '1px solid var(--border)',
+                                    color: 'var(--text-main)',
+                                    cursor: 'pointer'
+                                }}
+                            >
+                                {isEditing ? 'Cancel' : 'Edit'}
                             </button>
-                        )}
-                    </div>
-                )}
+                        </div>
+                    )}
+                    {
+                        onClose && (
+                            <button className="btn" style={{ padding: '6px', fontSize: 14, borderRadius: 24, border: 'none' }} onClick={onClose}>
+                                <X size={20} />
+                            </button>
+                        )
+                    }
+                </div>
             </div>
-            <div style={{ flex: 1, display: 'flex', flexDirection: 'column' }}>
+
+            <div
+                style={{
+                    overflowY: 'auto',
+                    flex: 1,
+                    display: 'flex',
+                    flexDirection: 'column',
+                    // Apply conditional class to hide borders if not editing
+                }}
+                className={!isEditing && readOnly ? "hide-editor-border" : (isEditing ? "" : "hide-editor-border")}
+            >
                 {/* We rely on CSS/JS to hide toolbar in useEffect */}
-                <div ref={editorRef} style={{ flex: 1 }}></div>
+                <div ref={editorRef} style={{ flex: 1, border: (!isEditing && type === 'overview') ? 'none' : undefined }}></div>
             </div>
         </div>
     );

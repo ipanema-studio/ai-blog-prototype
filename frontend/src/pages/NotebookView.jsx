@@ -4,7 +4,7 @@ import Sidebar from '../components/Sidebar';
 import Editor from '../components/Editor';
 import NotePanel from '../components/NotePanel';
 import api from '../api';
-import { Settings } from 'lucide-react';
+import { ArrowLeft, Settings, X } from 'lucide-react';
 
 export default function NotebookView() {
     const { id } = useParams();
@@ -121,84 +121,110 @@ export default function NotebookView() {
 
     return (
         <div className="notebook-layout">
-            {/* Left Column: Sources */}
-            <Sidebar
-                files={files}
-                onUpload={handleUpload}
-                onDeleteFile={handleDeleteFile}
-                onSelectFile={(f) => { setSelectedFile(f); setViewMode('file'); }}
-                onBack={() => navigate('/')}
-                notebookTitle={notebook.title}
-                isOwner={isOwner}
-            />
+            <header className="notebook-header">
+                <div style={{ display: 'flex', alignItems: 'center', gap: 16 }}>
+                    <button
+                        onClick={() => navigate('/')}
+                        style={{
+                            background: 'none',
+                            border: 'none',
+                            cursor: 'pointer',
+                            display: 'flex',
+                            alignItems: 'center',
+                            justifyContent: 'center',
+                            color: 'var(--text-main)',
+                            padding: '8px',
+                            borderRadius: '50%'
+                        }}
+                        onMouseEnter={(e) => e.currentTarget.style.backgroundColor = 'rgba(0,0,0,0.05)'}
+                        onMouseLeave={(e) => e.currentTarget.style.backgroundColor = 'transparent'}
+                    >
+                        <ArrowLeft size={20} /> {/* We can change this icon later if needed, mimicking Google style back or home icon */}
+                    </button>
+                    <h1 style={{ fontSize: '1.25rem', fontWeight: 600, margin: 0, color: 'var(--text-main)' }}>
+                        {notebook.title}
+                    </h1>
+                </div>
 
-            {/* Center Column: Content */}
-            <div className="main-content">
-                <header style={{ padding: '16px', borderBottom: '1px solid var(--border)', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-                    <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
-                        <h2 style={{ fontSize: 18, margin: 0 }}>
-                            {viewMode === 'overview' ? 'Notebook Overview' :
-                                viewMode === 'file' ? selectedFile?.filename :
-                                    activeNote ? activeNote.title : 'New Note'}
-                        </h2>
-                        {viewMode === 'overview' && isOwner && (
-                            <div style={{ position: 'relative' }}>
-                                <button className="btn" onClick={() => setShowSettings(!showSettings)} title="Notebook Settings">
-                                    <Settings size={16} />
-                                </button>
-                                {showSettings && (
-                                    <div className="card" style={{ position: 'absolute', top: '100%', left: 0, marginTop: 8, width: 200, zIndex: 100, padding: 8 }}>
-                                        <div
-                                            style={{ padding: '8px', cursor: 'pointer', fontSize: 14 }}
-                                            onClick={() => { setShowSettings(false); handleUpdateTitle(); }}
-                                            onMouseEnter={(e) => e.currentTarget.style.background = '#f1f3f4'}
-                                            onMouseLeave={(e) => e.currentTarget.style.background = 'white'}
-                                        >
-                                            Rename Notebook
-                                        </div>
-                                        <div
-                                            style={{ padding: '8px', cursor: 'pointer', fontSize: 14 }}
-                                            onClick={() => { setShowSettings(false); fileInputRef.current.click(); }}
-                                            onMouseEnter={(e) => e.currentTarget.style.background = '#f1f3f4'}
-                                            onMouseLeave={(e) => e.currentTarget.style.background = 'white'}
-                                        >
-                                            Change Thumbnail
-                                        </div>
+                <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
+                    {isOwner && (
+                        <div style={{ position: 'relative' }}>
+                            <button className="btn" onClick={() => setShowSettings(!showSettings)} title="Notebook Settings">
+                                <Settings size={16} /> <span style={{ marginLeft: 4 }}>Settings</span>
+                            </button>
+                            {showSettings && (
+                                <div className="card" style={{ position: 'absolute', top: '100%', right: 0, marginTop: 8, width: 200, zIndex: 100, padding: 8, boxShadow: '0 4px 6px rgba(0,0,0,0.1)' }}>
+                                    <div
+                                        style={{ padding: '10px 12px', cursor: 'pointer', fontSize: 14, borderRadius: 8 }}
+                                        onClick={() => { setShowSettings(false); handleUpdateTitle(); }}
+                                        onMouseEnter={(e) => e.currentTarget.style.background = '#f0f4f9'}
+                                        onMouseLeave={(e) => e.currentTarget.style.background = 'white'}
+                                    >
+                                        Rename Notebook
                                     </div>
-                                )}
-                            </div>
-                        )}
-                        <input
-                            type="file"
-                            ref={fileInputRef}
-                            style={{ display: 'none' }}
-                            accept="image/*"
-                            onChange={handleThumbnailUpload}
-                        />
-                    </div>
-                    {viewMode !== 'overview' && (
-                        <button className="btn" onClick={() => { setViewMode('overview'); setActiveNote(null); }}>Back to Overview</button>
-                    )}
-                </header>
-                <div style={{ flex: 1, overflowY: 'auto', padding: 24 }}>
-                    {viewMode === 'overview' ? (
-                        <Editor notebookId={id} type="overview" readOnly={!isOwner} />
-                    ) : viewMode === 'note' ? (
-                        <Editor notebookId={id} type="note" initialNote={activeNote} onSave={() => { /* triggers refresh in right panel? */ }} readOnly={!isOwner} />
-                    ) : (
-                        <div style={{ background: '#f1f3f4', height: '100%', borderRadius: 8, padding: 20 }}>
-                            {/* Simple file viewer placeholder */}
-                            <h3>File Preview: {selectedFile?.filename}</h3>
-                            <p>File type: {selectedFile?.file_type}</p>
-                            <a href={`http://localhost:8000/${selectedFile?.file_path}`} target="_blank" rel="noreferrer">Download / Open Original</a>
-                            <iframe src={`http://localhost:8000/${selectedFile?.file_path}`} style={{ width: '100%', height: '80%', border: 'none', marginTop: 10 }}></iframe>
+                                    <div
+                                        style={{ padding: '10px 12px', cursor: 'pointer', fontSize: 14, borderRadius: 8 }}
+                                        onClick={() => { setShowSettings(false); fileInputRef.current.click(); }}
+                                        onMouseEnter={(e) => e.currentTarget.style.background = '#f0f4f9'}
+                                        onMouseLeave={(e) => e.currentTarget.style.background = 'white'}
+                                    >
+                                        Change Thumbnail
+                                    </div>
+                                </div>
+                            )}
                         </div>
                     )}
+                    <input
+                        type="file"
+                        ref={fileInputRef}
+                        style={{ display: 'none' }}
+                        accept="image/*"
+                        onChange={handleThumbnailUpload}
+                    />
                 </div>
-            </div >
+            </header>
 
-            {/* Right Column: Notes */}
-            < NotePanel notebookId={id} onSelectNote={handleNoteSelect} onCreateNote={handleCreateNote} isOwner={isOwner} />
-        </div >
+            <div className="notebook-content">
+                {/* Left Column: Sources */}
+                <Sidebar
+                    files={files}
+                    onUpload={handleUpload}
+                    onDeleteFile={handleDeleteFile}
+                    onSelectFile={(f) => { setSelectedFile(f); setViewMode('file'); }}
+                    isOwner={isOwner}
+                />
+
+                {/* Center Column: Content */}
+                <div className="main-content" style={{ padding: 16 }}>
+                    {viewMode === 'file' ? (
+                        <div style={{ display: 'flex', flexDirection: 'column', height: '100%' }}>
+                            <header style={{ paddingBottom: 16, borderBottom: '1px solid var(--border)', display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 16 }}>
+                                <h4 style={{ margin: 0, fontSize: 16, fontWeight: 600 }}>{selectedFile?.filename}</h4>
+                                <button className="btn" style={{ padding: '6px', fontSize: 14, borderRadius: 24, border: 'none' }} onClick={() => { setViewMode('overview'); setActiveNote(null); }}>
+                                    <X size={20} />
+                                </button>
+                            </header>
+                            <div style={{ flex: 1, overflowY: 'auto' }}>
+                                <div style={{ background: '#f8f9fa', minHeight: '100%', borderRadius: 12, padding: 24, display: 'flex', flexDirection: 'column', boxSizing: 'border-box' }}>
+                                    <h3 style={{ marginTop: 0 }}>File Preview: {selectedFile?.filename}</h3>
+                                    <p style={{ color: 'var(--text-secondary)' }}>File type: {selectedFile?.file_type}</p>
+                                    <a href={`http://localhost:8000/${selectedFile?.file_path}`} target="_blank" rel="noreferrer" style={{ color: 'var(--primary)', textDecoration: 'none', fontWeight: 500, display: 'inline-block', marginBottom: 16 }}>
+                                        Download / Open Original
+                                    </a>
+                                    <iframe src={`http://localhost:8000/${selectedFile?.file_path}`} style={{ width: '100%', flex: 1, border: '1px solid var(--border)', borderRadius: 8, background: '#fff' }}></iframe>
+                                </div>
+                            </div>
+                        </div>
+                    ) : viewMode === 'overview' ? (
+                        <Editor notebookId={id} type="overview" readOnly={!isOwner} />
+                    ) : (
+                        <Editor notebookId={id} type="note" initialNote={activeNote} onClose={() => { setViewMode('overview'); setActiveNote(null); }} onSave={() => { /* triggers refresh in right panel? */ }} readOnly={!isOwner} />
+                    )}
+                </div>
+
+                {/* Right Column: Notes */}
+                <NotePanel notebookId={id} onSelectNote={handleNoteSelect} onCreateNote={handleCreateNote} isOwner={isOwner} />
+            </div>
+        </div>
     );
 }

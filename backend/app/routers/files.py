@@ -58,10 +58,6 @@ def list_files(notebook_id: int, db: Session = Depends(database.get_db), current
 
 @router.delete("/{file_id}")
 def delete_file(file_id: int, db: Session = Depends(database.get_db), current_user: models.User = Depends(get_current_user)):
-    # Create query to check file exists
-    db_file = db.query(models.SourceFile).query(models.SourceFile).filter(models.SourceFile.id == file_id).first()
-    
-    # Actually simpler:
     db_file = db.query(models.SourceFile).filter(models.SourceFile.id == file_id).first()
 
     if not db_file:

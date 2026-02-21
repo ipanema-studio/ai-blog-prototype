@@ -8,22 +8,18 @@ export default function Sidebar({ files, onUpload, onDeleteFile, onSelectFile, o
     };
 
     return (
-        <div className="sidebar">
-            <div style={{ padding: 16, borderBottom: '1px solid var(--border)' }}>
-                <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 16, cursor: 'pointer' }} onClick={onBack}>
-                    <ArrowLeft size={16} />
-                    <span style={{ fontWeight: 600 }}>{notebookTitle}</span>
-                </div>
+        <div className="sidebar" style={{ padding: 16 }}>
+            <div style={{ paddingBottom: 16, borderBottom: '1px solid var(--border)', display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 16 }}>
+                <h4 style={{ margin: 0, fontSize: 16, fontWeight: 600 }}>Sources</h4>
                 {isOwner && (
-                    <label className="btn btn-primary" style={{ display: 'flex', justifyContent: 'center', width: '100%', boxSizing: 'border-box' }}>
-                        <Upload size={16} />
-                        Add Source
+                    <label className="btn btn-primary" style={{ cursor: 'pointer', padding: '6px 12px', fontSize: 14, borderRadius: 24, background: '#eef3fc', color: '#1a73e8', border: 'none', margin: 0 }}>
+                        <Upload size={16} /> Add
                         <input type="file" style={{ display: 'none' }} onChange={handleFileChange} />
                     </label>
                 )}
             </div>
-            <div style={{ flex: 1, overflowY: 'auto', padding: 16 }}>
-                <h4 style={{ margin: '0 0 12px 0', color: 'var(--text-secondary)', fontSize: 12, textTransform: 'uppercase' }}>Sources ({files.length})</h4>
+            <div style={{ flex: 1, overflowY: 'auto' }}>
+                <h4 style={{ margin: '0 0 12px 0', color: 'var(--text-secondary)', fontSize: 12, textTransform: 'uppercase' }}># of Sources: {files.length}</h4>
                 <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
                     {files.map(f => (
                         <div

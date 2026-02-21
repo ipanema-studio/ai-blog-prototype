@@ -36,17 +36,17 @@ export default function NotePanel({ notebookId, onSelectNote, onCreateNote, isOw
     };
 
     return (
-        <div className="right-panel">
-            <div style={{ padding: 16, borderBottom: '1px solid var(--border)', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                <h4 style={{ margin: 0 }}>Saved Notes</h4>
+        <div className="right-panel" style={{ padding: 16 }}>
+            <div style={{ paddingBottom: 16, borderBottom: '1px solid var(--border)', display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 16 }}>
+                <h4 style={{ margin: 0, fontSize: 16, fontWeight: 600 }}>Notes</h4>
                 {isOwner && (
-                    <button className="btn btn-primary" style={{ padding: '4px 12px', fontSize: 12 }} onClick={onCreateNote}>
-                        <Plus size={14} /> New
+                    <button className="btn btn-primary" style={{ padding: '6px 12px', fontSize: 14, borderRadius: 24, background: '#eef3fc', color: '#1a73e8', border: 'none' }} onClick={onCreateNote}>
+                        <Plus size={16} /> New
                     </button>
                 )}
             </div>
 
-            <div style={{ flex: 1, overflowY: 'auto', padding: 16, display: 'flex', flexDirection: 'column', gap: 12 }}>
+            <div style={{ flex: 1, overflowY: 'auto', display: 'flex', flexDirection: 'column', gap: 12 }}>
                 {notes.map(note => (
                     <div
                         key={note.id}
