@@ -78,10 +78,9 @@ body {
 
 /* Layouts */
 .dashboard-layout {
-  max-width: 1200px;
   margin: 0 auto;
   padding: 24px;
-  width: 100%;
+  width: 90%;
 }
 
 .notebook-layout {

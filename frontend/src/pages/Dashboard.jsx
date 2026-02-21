@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Plus, Search, Book, Trash2 } from 'lucide-react';
+import { Plus, Search, Book, Trash2, LogOut } from 'lucide-react';
 import api from '../api';
 
 export default function Dashboard() {
@@ -64,7 +64,7 @@ export default function Dashboard() {
     return (
         <div className="dashboard-layout">
             <header style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 32 }}>
-                <h1>AMS SW Archive</h1>
+                <h1 style={{ fontSize: '3em' }}>AMS SW Archive</h1>
                 <div style={{ display: 'flex', gap: 16, alignItems: 'center' }}>
                     {currentUser && (
                         <span style={{ marginRight: 16, fontWeight: 600 }}>
@@ -86,6 +86,7 @@ export default function Dashboard() {
                         New Notebook
                     </button>
                     <button className="btn" onClick={handleLogout} style={{ color: 'var(--text-secondary)' }}>
+                        <LogOut size={18} />
                         Log Out
                     </button>
                 </div>
